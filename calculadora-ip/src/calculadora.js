@@ -7,11 +7,15 @@ function Calculadora() {
     let [resultado, setResultado] = React.useState(null);
 
     function comprobarInputIP(event) {
-        setInputIP(event.target.value);
+        // Solo permitir números y puntos
+        const valor = event.target.value.replace(/[^0-9.]/g, '');
+        setInputIP(valor);
     }
 
     function comprobarInputMascara(event) {
-        setInputMascara(event.target.value);
+        // Solo permitir números y puntos
+        const valor = event.target.value.replace(/[^0-9.]/g, '');
+        setInputMascara(valor);
     }
 
     function obtenerClaseIP(primerOcteto) {
