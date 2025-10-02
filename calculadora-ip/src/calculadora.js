@@ -1,22 +1,16 @@
+
 import React from "react";
 import "./styles.css";
+import InputIP from "./InputIP";
+import InputMascara from "./InputMascara";
+import ResultadosIP from "./ResultadosIP";
 
 function Calculadora() {
     let [inputIP, setInputIP] = React.useState("");
     let [inputMascara, setInputMascara] = React.useState("");
     let [resultado, setResultado] = React.useState(null);
 
-    function comprobarInputIP(event) {
-        // Solo permitir números y puntos
-        const valor = event.target.value.replace(/[^0-9.]/g, '');
-        setInputIP(valor);
-    }
-
-    function comprobarInputMascara(event) {
-        // Solo permitir números y puntos
-        const valor = event.target.value.replace(/[^0-9.]/g, '');
-        setInputMascara(valor);
-    }
+    // Las funciones de comprobación ahora están en los componentes hijos
 
     function obtenerClaseIP(primerOcteto) {
         if (primerOcteto >= 1 && primerOcteto <= 126) return "A";
@@ -208,58 +202,22 @@ function Calculadora() {
         });
     }
 
+    function limpiar() {
+        setInputIP("");
+        setInputMascara("");
+        setResultado(null);
+    }
+
     return (
         <div className="calculadora">
             <h1 className="titulo-principal">Calculadora de Direcciones IP</h1>
             <div className="input-group">
-                <div>
-                    <label>Dirección IP: </label>
-                    <input 
-                        type="text" 
-                        placeholder="Ej: 192.168.1.1"
-                        value={inputIP}
-                        onChange={comprobarInputIP}
-                    />
-                </div>
-                <div>
-                    <label>Máscara de red: </label>
-                    <input 
-                        type="text" 
-                        placeholder="Ej: 255.255.255.0"
-                        value={inputMascara}
-                        onChange={comprobarInputMascara}
-                    />
-                </div>
+                <InputIP value={inputIP} onChange={setInputIP} />
+                <InputMascara value={inputMascara} onChange={setInputMascara} />
                 <button onClick={calcular}>Calcular</button>
+                <button onClick={limpiar} style={{marginLeft: '10px'}}>Limpiar</button>
             </div>
-
-            {resultado && (
-                <div className="resultados">
-                    <h3>Resultados:</h3>
-                    <p><strong>IP de Red:</strong> {resultado.ipRed}</p>
-                    <p><strong>IP de Broadcast:</strong> {resultado.ipBroadcast}</p>
-                    <p><strong>Cantidad de IPs útiles:</strong> {resultado.hosts}</p>
-                    <p><strong>Rango de IPs útiles:</strong> {resultado.rangoUtil}</p>
-                    <p><strong>Clase de IP:</strong> {resultado.clase}</p>
-                    <p><strong>Tipo de IP:</strong> {resultado.esPrivada ? 'Privada' : 'Pública'}</p>
-                    
-                    <div className="representacion-binaria">
-                        <h4>Representación Binaria:</h4>
-                        <div className="binario-container">
-                            {resultado.representacionBinaria.ipCompleta.map((octeto, index) => (
-                                <React.Fragment key={`fragment-${index}`}>
-                                    {octeto}
-                                    {index < 3 && <span className="separador">.</span>}
-                                </React.Fragment>
-                            ))}
-                        </div>
-                        <div className="leyenda">
-                            <span><span className="red-dot"></span> Porción de Red</span>
-                            <span><span className="host-dot"></span> Porción de Host</span>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <ResultadosIP resultado={resultado} />
         </div>
     );
 }
