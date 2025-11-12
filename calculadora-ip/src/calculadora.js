@@ -211,9 +211,9 @@ function Calculadora() {
         const unosEnMascara = mascaraBinario.split('1').length - 1;
         let hosts = Math.pow(2, 32 - unosEnMascara) - 2;
         
-        // Caso especial: si la máscara es 255.255.255.255, hay 0 hosts útiles
+        // Caso especial: si la máscara es 255.255.255.255, hay 1 host útil
         if (inputMascara === '255.255.255.255') {
-            hosts = 0;
+            hosts = 1;
         }
 
         const representacionBinaria = visualizarRedBinaria(ipBinario, mascaraBinario);

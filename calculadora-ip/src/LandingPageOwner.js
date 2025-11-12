@@ -20,14 +20,6 @@ function LandingPageOwner({ onStartCalculator }) {
                 
                 <div className="landing-content">
                     <div className="resultados">
-                        <h3>Acerca de Esta Aplicación</h3>
-                        <p>
-                            Esta calculadora te permite realizar cálculos detallados sobre direcciones IP,
-                            máscaras de red, y visualizar información sobre subredes de forma clara y precisa.
-                        </p>
-                    </div>
-
-                    <div className="resultados">
                         <h3>Acerca del Desarrollador</h3>
                         <p><strong>Nombre:</strong> Daniel Sebastián Castro Figueredo</p>
                         <p><strong>Profesión:</strong> Ingeniero de Sistemas de la Universidad El Bosque - 6to Semestre</p>

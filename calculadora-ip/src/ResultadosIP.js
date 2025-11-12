@@ -3,8 +3,8 @@ import React from "react";
 function ResultadosIP({ resultado }) {
     if (!resultado) return null;
     
-    // Determinar si no hay hosts útiles
-    const sinHostsUtiles = resultado.hosts === 0;
+    // Determinar si hay solo un host útil (máscara /32)
+    const unSoloHost = resultado.hosts === 1;
     
     return (
         <div className="resultados">
@@ -13,9 +13,9 @@ function ResultadosIP({ resultado }) {
             <p><strong>IP de Broadcast:</strong> {resultado.ipBroadcast}</p>
             <p><strong>Cantidad de IPs útiles:</strong> {resultado.hosts}</p>
             
-            {sinHostsUtiles ? (
-                <p style={{ color: '#e74c3c', fontWeight: 'bold' }}>
-                    ⚠️ No hay hosts útiles disponibles (máscara /32 - toda la IP es red)
+            {unSoloHost ? (
+                <p style={{ color: '#f39c12', fontWeight: 'bold' }}>
+                    ℹ️ Máscara /32 - Solo hay un host útil en este segmento
                 </p>
             ) : (
                 <p><strong>Rango de IPs útiles:</strong> {resultado.rangoUtil}</p>
@@ -35,12 +35,12 @@ function ResultadosIP({ resultado }) {
                 </div>
                 <div className="leyenda">
                     <span><span className="red-dot"></span> Porción de Red</span>
-                    {!sinHostsUtiles && (
+                    {!unSoloHost && (
                         <span><span className="host-dot"></span> Porción de Host</span>
                     )}
-                    {sinHostsUtiles && (
+                    {unSoloHost && (
                         <span style={{ color: '#999', fontSize: '0.9em' }}>
-                            (Solo porción de red - sin hosts disponibles)
+                            (Solo porción de red - /32 con un host útil)
                         </span>
                     )}
                 </div>
