@@ -4,11 +4,13 @@ import "./styles.css";
 import InputIP from "./InputIP";
 import InputMascara from "./InputMascara";
 import ResultadosIP from "./ResultadosIP";
+import LandingPageOwner from "./LandingPageOwner";
 
 function Calculadora() {
     let [inputIP, setInputIP] = React.useState("");
     let [inputMascara, setInputMascara] = React.useState("");
     let [resultado, setResultado] = React.useState(null);
+    let [mostrarLanding, setMostrarLanding] = React.useState(true);
 
     // Las funciones de comprobación ahora están en los componentes hijos
 
@@ -92,11 +94,19 @@ function Calculadora() {
         // Encontrar la posición donde comienza la parte de host
         const posicionHost = mascara.indexOf('0');
         
+        // Si no hay '0' en la máscara, significa que toda la IP es red (máscara 255.255.255.255)
+        const esTodasRed = posicionHost === -1;
+        
         return {
             ipCompleta: octetos.map((octeto, index) => {
                 // Calcular la posición inicial de este octeto en bits
                 const posInicial = index * 8;
                 const posFinal = posInicial + 8;
+                
+                // Si la máscara es 255.255.255.255, todo es porción de red
+                if (esTodasRed) {
+                    return <span key={index} className="red-portion">{octeto}</span>;
+                }
                 
                 // Si este octeto contiene la transición de red a host
                 if (posicionHost >= posInicial && posicionHost < posFinal) {
@@ -123,6 +133,18 @@ function Calculadora() {
     function calcular() {
         let partesIP = inputIP.split(".");
         let partesMascara = inputMascara.split(".");
+
+        // Validar que la IP tenga exactamente 4 octetos
+        if (partesIP.length !== 4 || partesIP.some(octeto => octeto === '')) {
+            alert("La dirección IP debe tener el formato xx.xx.xx.xx (4 octetos).");
+            return;
+        }
+
+        // Validar que la máscara tenga exactamente 4 octetos
+        if (partesMascara.length !== 4 || partesMascara.some(octeto => octeto === '')) {
+            alert("La máscara debe tener el formato xx.xx.xx.xx (4 octetos).");
+            return;
+        }
 
         // Validar que cada octeto esté en el rango correcto
         for (let i = 0; i < partesIP.length; i++) {
@@ -187,7 +209,12 @@ function Calculadora() {
 
         // Calcular hosts (utilizando la máscara)
         const unosEnMascara = mascaraBinario.split('1').length - 1;
-        const hosts = Math.pow(2, 32 - unosEnMascara) - 2;
+        let hosts = Math.pow(2, 32 - unosEnMascara) - 2;
+        
+        // Caso especial: si la máscara es 255.255.255.255, hay 0 hosts útiles
+        if (inputMascara === '255.255.255.255') {
+            hosts = 0;
+        }
 
         const representacionBinaria = visualizarRedBinaria(ipBinario, mascaraBinario);
         
@@ -208,8 +235,24 @@ function Calculadora() {
         setResultado(null);
     }
 
+    function iniciarCalculador() {
+        setMostrarLanding(false);
+    }
+
+    function volverAlLanding() {
+        setMostrarLanding(true);
+        limpiar();
+    }
+
+    if (mostrarLanding) {
+        return <LandingPageOwner onStartCalculator={iniciarCalculador} />;
+    }
+
     return (
         <div className="calculadora">
+            <button className="back-button" onClick={volverAlLanding} title="Volver al inicio">
+                ← Volver al Inicio
+            </button>
             <h1 className="titulo-principal">Calculadora de Direcciones IP</h1>
             <div className="input-group">
                 <InputIP value={inputIP} onChange={setInputIP} />
